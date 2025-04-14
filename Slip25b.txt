@@ -1,0 +1,78 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class DDLQueryExecutor extends JFrame implements ActionListener {
+
+    private JTextField queryTextField;
+    private JButton createTableButton;
+    private JButton alterTableButton;
+    private JButton dropTableButton;
+    private Connection connection;
+    private String dbUrl = "jdbc:your_database_type://localhost:your_port/your_database_name"; // Replace with your DB URL
+    private String dbUser = "your_username"; // Replace with your DB username
+    private String dbPassword = "your_password"; // Replace with your DB password
+
+    public DDLQueryExecutor() {
+        setTitle("DDL Query Executor");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new FlowLayout());
+
+        JLabel queryLabel = new JLabel("Type Your DDL Query Here:");
+        queryTextField = new JTextField(30);
+        createTableButton = new JButton("Create Table");
+        alterTableButton = new JButton("Alter Table");
+        dropTableButton = new JButton("Drop Table");
+
+        createTableButton.addActionListener(this);
+        alterTableButton.addActionListener(this);
+        dropTableButton.addActionListener(this);
+
+        add(queryLabel);
+        add(queryTextField);
+        add(createTableButton);
+        add(alterTableButton);
+        add(dropTableButton);
+
+        try {
+            // Load the JDBC driver (replace with your database driver class)
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        } catch (ClassNotFoundException | SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database connection failed: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
+
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (connection != null) {
+            String query = queryTextField.getText().trim();
+            if (!query.isEmpty()) {
+                try (Statement statement = connection.createStatement()) {
+                    statement.executeUpdate(query);
+                    JOptionPane.showMessageDialog(this, "DDL query executed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, "Error executing DDL query: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Please enter a DDL query.", "Information", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Not connected to the database.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(DDLQueryExecutor::new);
+    }
+}
