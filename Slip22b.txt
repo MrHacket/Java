@@ -1,0 +1,85 @@
+Write a JSP program to accept the details of Account (ANo, Type, Bal) and store it into database and display it in tabular form.
+Solution:
+<%@ page import="java.sql.*" %>
+
+<%
+    Connection conn = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+    String url = "jdbc:odbc:Test"; // Change "Test" to your database DSN
+    String user = ""; // if any
+    String password = ""; // if any
+
+    try {
+        // Establishing connection
+        Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+        conn = DriverManager.getConnection(url, user, password);
+        stmt = conn.createStatement();
+
+        // Checking if table exists, if not, create it
+        DatabaseMetaData dbm = conn.getMetaData();
+        rs = dbm.getTables(null, null, "Accounts", null);
+        if (!rs.next()) {
+            stmt.executeUpdate("CREATE TABLE Accounts (ANo INT, Type VARCHAR(255), Bal FLOAT)");
+        }
+
+        // Handling form submission
+        if (request.getMethod().equals("POST")) {
+            int ANo = Integer.parseInt(request.getParameter("ANo"));
+            String type = request.getParameter("Type");
+            float bal = Float.parseFloat(request.getParameter("Bal"));
+
+            // Inserting data into database
+            stmt.executeUpdate("INSERT INTO Accounts (ANo, Type, Bal) VALUES (" + ANo + ", '" + type + "', " + bal + ")");
+        }
+
+        // Fetching data from database
+        rs = stmt.executeQuery("SELECT * FROM Accounts");
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Account Details</title>
+</head>
+<body>
+    <h1>Account Details</h1>
+    <form method="post">
+        Account Number: <input type="text" name="ANo"><br>
+        Type: <input type="text" name="Type"><br>
+        Balance: <input type="text" name="Bal"><br>
+        <input type="submit" value="Submit">
+    </form>
+    
+    <br>
+    
+    <table border="1">
+        <tr>
+            <th>Account Number</th>
+            <th>Type</th>
+            <th>Balance</th>
+        </tr>
+        <% while (rs.next()) { %>
+        <tr>
+            <td><%= rs.getInt("ANo") %></td>
+            <td><%= rs.getString("Type") %></td>
+            <td><%= rs.getFloat("Bal") %></td>
+        </tr>
+        <% } %>
+    </table>
+</body>
+</html>
+
+<%
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+%>

@@ -1,0 +1,43 @@
+SLIP - 1 
+Write a java program to scroll the text from left to right and vice versa continuously.
+
+SLIP - 2
+Write a JSP program to check whether given number is Perfect or not. (Use Include directive).
+
+SLIP - 3 
+Write a socket program in Java to check whether given number is prime or not. Display result on client terminal.
+
+SLIP - 5
+Write a JSP program to calculate sum of first and last digit of a given number. Display sum in Red Color with font size 18.
+
+SLIP - 6 
+Write a java program to blink image on the Frame continuously
+
+SLIP - 7 
+Write a JSP script to validate given E-Mail ID
+
+SLIP - 11
+Write a java program to display IPAddress and name of client machine
+
+SLIP - 13
+Write a java program to display name of currently executing Thread in multithreading
+
+SLIP - 16
+Write a JSP script to accept username and password from user, if they are same then display “Login Successfully” message in Login.html file, otherwise display “Login Failed” Message in Error.html file.
+
+SLIP - 17
+Write a java program to accept a String from user and display each vowel from a String after 3 seconds
+
+SLIP - 19
+Write a JSP program which accept UserName in a TextBox and greets the user according to the time on server machine.
+
+SLIP - 24
+Create a JSP page to accept a number from a user and display it in words: Example: 123 – One Two Three. The output should be in red color.
+
+SLIP - 29 
+Write a java program using multithreading for the following:
+1. Display all the odd numbers between 1 to n.
+2. Display all the prime numbers between 1 to n
+
+SLIP - 30
+Write a JSP script to accept a String from a user and display it in reverse order

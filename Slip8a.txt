@@ -1,0 +1,45 @@
+Write a Java Program to display all the employee names whose initial character of a name is ‘A’.
+
+import java.sql.*;
+
+public class DisplayEmployees {
+    public static void main(String[] args) {
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+
+            conn = DriverManager.getConnection("jdbc:odbc:mydsn");
+
+            statement = conn.createStatement();
+
+            String sql = "SELECT Name FROM Employees WHERE Name LIKE 'A%'";
+            resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                String name = resultSet.getString("Name");
+                System.out.println(name);
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Step 6: Close the result set, statement, and connection
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+

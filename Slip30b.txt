@@ -1,0 +1,63 @@
+slip 30
+
+
+
+import java.applet.Applet;
+import java.awt.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+/*
+<applet code="MovingCarApplet" width="800" height="400"></applet>
+*/
+
+public class MovingCarApplet extends Applet implements Runnable {
+
+    int x = 0; // X-position of the car
+    Thread t;
+    AtomicBoolean running = new AtomicBoolean(true);
+
+    public void init() {
+        setBackground(Color.cyan);
+    }
+
+    public void start() {
+        t = new Thread(this);
+        t.start();
+    }
+
+    public void run() {
+        while (running.get()) {
+            x += 5;
+            if (x > getWidth()) {
+                x = -100; // Reset car position after it exits screen
+            }
+            repaint();
+            try {
+                Thread.sleep(50); // Delay for smooth animation
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
+        }
+    }
+
+    public void paint(Graphics g) {
+        // Draw the road
+        g.setColor(Color.gray);
+        g.fillRect(0, 300, getWidth(), 100);
+
+        // Draw the car body
+        g.setColor(Color.red);
+        g.fillRect(x, 250, 100, 50); // Main body
+        g.setColor(Color.blue);
+        g.fillRect(x + 20, 230, 60, 30); // Top of the car
+
+        // Draw the wheels
+        g.setColor(Color.black);
+        g.fillOval(x + 15, 295, 20, 20); // Left wheel
+        g.fillOval(x + 65, 295, 20, 20); // Right wheel
+    }
+
+    public void stop() {
+        running.set(false); // Stop the thread if the applet is stopped
+    }
+}

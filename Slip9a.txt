@@ -1,0 +1,53 @@
+Write a Java Program to create a Emp (ENo, EName, Sal) table and insert record
+into it. (Use PreparedStatement Interface)
+
+import java.sql.*;
+
+public class InsertEmployee {
+    public static void main(String[] args) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            // Step 1: Register JDBC driver
+            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+
+            // Step 2: Connect to the database using DSN
+            conn = DriverManager.getConnection("jdbc:odbc:mydsn");
+
+            // Step 3: Create a PreparedStatement
+            String sql = "INSERT INTO Emp (ENo, EName, Sal) VALUES (?, ?, ?)";
+            preparedStatement = conn.prepareStatement(sql);
+
+            // Step 4: Set parameters for the PreparedStatement
+            preparedStatement.setInt(1, 101); // ENo
+            preparedStatement.setString(2, "John"); // EName
+            preparedStatement.setDouble(3, 50000.00); // Sal
+
+            // Step 5: Execute the PreparedStatement
+            int rowsInserted = preparedStatement.executeUpdate();
+
+            // Step 6: Process the result
+            if (rowsInserted > 0) {
+                System.out.println("A new employee record inserted successfully.");
+            } else {
+                System.out.println("Failed to insert employee record.");
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Step 7: Close the PreparedStatement and connection
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+

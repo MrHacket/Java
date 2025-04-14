@@ -1,0 +1,73 @@
+slip 19 b
+
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class StudentFirstRecordApp extends JFrame {
+
+    JTextField tfRno, tfName, tfPer;
+    JButton btnShow;
+
+    public StudentFirstRecordApp() {
+        setTitle("Student Record Viewer");
+        setSize(400, 250);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new GridLayout(4, 2, 10, 10));
+
+       
+        add(new JLabel("Roll No:"));
+        tfRno = new JTextField();
+        add(tfRno);
+
+        add(new JLabel("Student Name:"));
+        tfName = new JTextField();
+        add(tfName);
+
+        add(new JLabel("Percentage:"));
+        tfPer = new JTextField();
+        add(tfPer);
+
+        btnShow = new JButton("Show First Record");
+        add(btnShow);
+
+        
+        add(new JLabel());
+
+        btnShow.addActionListener(e -> fetchFirstStudent());
+
+        setVisible(true);
+    }
+
+    private void fetchFirstStudent() {
+        try {
+                       Class.forName("com.mysql.cj.jdbc.Driver");
+           
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/your_database_name", "root", "your_password");
+
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Student LIMIT 1");
+
+            if (rs.next()) {
+                tfRno.setText(String.valueOf(rs.getInt("rno")));
+                tfName.setText(rs.getString("sname"));
+                tfPer.setText(String.valueOf(rs.getFloat("per")));
+            } else {
+                JOptionPane.showMessageDialog(this, "No record found.");
+            }
+
+            con.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+        new StudentFirstRecordApp();
+    }
+}

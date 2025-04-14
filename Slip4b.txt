@@ -1,0 +1,52 @@
+Write a SERVLET program that provides information about a HTTP request from a client, such as IP address and browser type. The servlet also provides information about the server on which the servlet is running, such as the operating system type, and the names of currently loaded servlets.
+
+//web.xml
+<web-app>
+	  <servlet>
+        <servlet-name>RequestInfoServlet</servlet-name>
+        <servlet-class>com.example.RequestInfoServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>RequestInfoServlet</servlet-name>
+        <url-pattern>/RequestInfoServlet</url-pattern>
+    </servlet-mapping>
+</web-app>
+
+Slip4.java
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/RequestInfoServlet")
+public class RequestInfoServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        out.println("<html><head><title>Request Information</title></head><body>");
+        out.println("<h1>Request Information</h1>");
+        out.println("<h2>Client Information:</h2>");
+        out.println("<p>IP Address: " + request.getRemoteAddr() + "</p>");
+        out.println("<p>Browser Type: " + request.getHeader("User-Agent") + "</p>");
+        out.println("<h2>Server Information:</h2>");
+        out.println("<p>Server Name: " + request.getServerName() + "</p>");
+        out.println("<p>Server Port: " + request.getServerPort() + "</p>");
+        out.println("<p>Server Software: " + getServletContext().getServerInfo() + "</p>");
+        out.println("<p>Operating System: " + System.getProperty("os.name") + "</p>");
+        out.println("<p>Servlets Loaded:</p>");
+        out.println("<ul>");
+        // Get all servlet names
+        for (String servletName : getServletContext().getServletRegistrations().keySet()) {
+            out.println("<li>" + servletName + "</li>");
+        }
+        out.println("</ul>");
+        out.println("</body></html>");
+    }
+}
